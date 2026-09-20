@@ -16,7 +16,7 @@
     {
       "binding": "DB",
       "database_name": "orbit-trade-db",
-      "database_id": "REPLACE_WITH_YOUR_DATABASE_ID",
+      "database_id": "8ec9859b-a1bc-4d36-80ad-1e95ccec8d10",
       "migrations_dir": "migrations"
     }
   ],
