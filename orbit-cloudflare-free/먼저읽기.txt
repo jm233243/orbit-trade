@@ -1,0 +1,63 @@
+헤이즈 수정본 — 기존 사이트 업데이트
+
+변경 내용
+- 사이트 이름: 헤이즈
+- 방문자: 로그인 없이 거래글 목록/상세/오픈프로필 연락
+- 상단 관리자 버튼 → 비밀번호 입력 → 관리자 페이지
+- 거래글 작성/수정/삭제, 상태/숨김 변경, 공지와 설정 관리는 관리자만 가능
+- Google 로그인 설정은 필요 없습니다.
+
+1. GitHub 파일 교체
+기존 저장소의 orbit-cloudflare-free 폴더를 여세요.
+Add file → Upload files에서 이번 ZIP 안 orbit-cloudflare-free 폴더의 내용 전체를 올려 기존 파일을 덮어쓰고 Commit changes 하세요.
+바깥 orbit-cloudflare-free 폴더를 다시 올려 폴더가 이중으로 생기지 않도록 해주세요.
+worker.mjs, wrangler.jsonc, public 폴더 등이 기존과 같은 위치여야 합니다.
+
+DB ID와 실제 사이트 주소는 이미 설정해두었습니다.
+Worker 이름 orbit-trade는 주소를 유지하기 위한 내부 이름입니다. 화면에는 헤이즈로 표시됩니다.
+기존 DB의 사이트 이름이 ORBIT인 경우 헤이즈로 표시됩니다.
+DB를 새로 만들거나 Console에서 테이블 생성 SQL을 다시 실행하지 마세요.
+기존 거래글/공지/DB는 삭제하지 않습니다. 기존 글도 새 관리자 비밀번호로 관리할 수 있습니다.
+
+2. 관리자 비밀번호 설정 (사이트 파일에 쓰지 마세요)
+Cloudflare → Workers & Pages → orbit-trade → Settings
+→ Variables and Secrets → Add
+
+Type: Secret
+Variable name: ADMIN_PASSWORD
+Value: 본인만 아는 16~256자 비밀번호
+
+Save/Deploy로 적용하세요.
+Build의 환경변수가 아니라 Worker의 실행용 Variables and Secrets에 추가해야 합니다.
+공개 GitHub 저장소나 채팅에 비밀번호를 적지 마세요.
+Google용 비밀 설정은 이번 코드에서 사용하지 않습니다.
+
+3. 확인
+GitHub 변경에 따른 자동 배포가 성공하면 아래 주소를 여세요.
+https://orbit-trade.yiraethai7777.workers.dev
+
+위쪽 관리자 버튼 → 설정한 비밀번호 입력 → 거래글 작성
+일반 방문자는 로그인 버튼/내 거래글/글 작성 버튼이 보이지 않습니다.
+관리자 페이지 주소: https://orbit-trade.yiraethai7777.workers.dev/admin
+이전 화면이 보이면 Ctrl+F5로 새로고침하세요.
+
+보안과 동작
+- 비밀번호는 Cloudflare Secret에서만 사용합니다. 공개 파일에 비밀번호가 없습니다.
+- 서버가 모든 쓰기 요청에 관리자 세션을 검사합니다.
+- 세션: HttpOnly / Secure / SameSite 쿠키, 8시간 만료
+- 로그인 시도: IP별 15분에 5회 제한
+- ADMIN_PASSWORD를 변경하면 이전 세션이 무효화됩니다.
+- 비밀번호가 미설정이거나 16자 미만이면 관리자 로그인은 차단됩니다.
+- 기존 Google 로그인 세션으로는 관리자/작성 권한을 얻을 수 없습니다.
+- 데이터는 저장 즉시 DB에 반영되며 다른 열린 화면은 최대 15초 후 갱신됩니다.
+
+검증
+실제 Worker 코드 + SQLite로 38개 검증 통과:
+관리자 비밀번호 로그인, 틀린 비밀번호/Origin 거부, 익명 쓰기 차단,
+글 작성/수정/삭제/숨김, 공지/설정, 로그인 시도 제한, 로그아웃,
+비밀번호 변경에 따른 세션 무효화, 예전 Google 세션 거부.
+JavaScript 문법 검사도 통과했습니다.
+이 ZIP은 파일 수정본이며 운영 사이트에는 아직 반영하지 않았습니다.
+
+공식 비밀 설정 안내
+https://developers.cloudflare.com/workers/configuration/secrets/

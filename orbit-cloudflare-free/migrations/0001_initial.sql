@@ -1,0 +1,12 @@
+CREATE TABLE users(id TEXT PRIMARY KEY, email TEXT NOT NULL, name TEXT NOT NULL);
+CREATE TABLE sessions(token_hash TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id) ON DELETE CASCADE, expires INTEGER NOT NULL);
+CREATE INDEX idx_sessions_expires ON sessions(expires);
+CREATE TABLE oauth_states(state_hash TEXT PRIMARY KEY, verifier TEXT NOT NULL, return_to TEXT NOT NULL, expires INTEGER NOT NULL);
+CREATE INDEX idx_oauth_expires ON oauth_states(expires);
+CREATE TABLE rate_limits(key TEXT PRIMARY KEY, count INTEGER NOT NULL, expires INTEGER NOT NULL);
+CREATE INDEX idx_limits_expires ON rate_limits(expires);
+CREATE TABLE posts(id TEXT PRIMARY KEY, owner TEXT NOT NULL REFERENCES users(id), title TEXT NOT NULL, content TEXT NOT NULL, price TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN ('available','unavailable')), link TEXT NOT NULL, hidden INTEGER NOT NULL DEFAULT 0 CHECK(hidden IN(0,1)), created TEXT NOT NULL, updated TEXT NOT NULL);
+CREATE INDEX idx_posts_owner_created ON posts(owner,created);
+CREATE INDEX idx_posts_hidden_created ON posts(hidden,created);
+CREATE TABLE notices(id TEXT PRIMARY KEY, title TEXT NOT NULL, content TEXT NOT NULL, created TEXT NOT NULL, updated TEXT NOT NULL);
+CREATE TABLE settings(id INTEGER PRIMARY KEY CHECK(id=1), name TEXT NOT NULL, description TEXT NOT NULL);

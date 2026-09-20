@@ -1,0 +1,33 @@
+{
+  "name": "orbit-trade",
+  "main": "worker.mjs",
+  "compatibility_date": "2026-09-19",
+  "workers_dev": true,
+  "assets": {
+    "directory": "./public",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": [
+      "/api/*",
+      "/auth/*"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "orbit-trade-db",
+      "database_id": "8ec9859b-a1bc-4d36-80ad-1e95ccec8d10",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "APP_ORIGIN": "https://orbit-trade.yiraethai7777.workers.dev"
+  },
+  "triggers": {
+    "crons": [
+      "0 */6 * * *"
+    ]
+  },
+  "no_bundle": true,
+  "find_additional_modules": false
+}
