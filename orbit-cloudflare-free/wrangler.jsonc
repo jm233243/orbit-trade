@@ -21,7 +21,7 @@
     }
   ],
   "vars": {
-    "APP_ORIGIN": "https://orbit-trade.yiraethai7777.workers.dev"
+    "APP_ORIGIN": "https://orbit-trade.heze325695.workers.dev"
   },
   "triggers": {
     "crons": [
